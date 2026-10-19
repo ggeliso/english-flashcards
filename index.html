@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Say it naturally</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E9EFED; --surface:#FFFFFF; --ink:#14262B; --muted:#58696D; --line:#CBD8D5;
+  --accent:#0E6B66; --accent-ink:#FFFFFF; --miss:#A7384B; --almost:#9A6412; --good:#0E6B66;
+  --chip:#DDE7E4; --chip-on:#14262B; --chip-on-ink:#FFFFFF;
+  --sans:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1B1E; --surface:#172A2E; --ink:#E7F0EE; --muted:#9DB1B4; --line:#2B4247;
+    --accent:#5CC9BD; --accent-ink:#0B1A1D; --miss:#F08A9B; --almost:#E5B15C; --good:#5CC9BD;
+    --chip:#1F3539; --chip-on:#E7F0EE; --chip-on-ink:#0F1B1E;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1B1E; --surface:#172A2E; --ink:#E7F0EE; --muted:#9DB1B4; --line:#2B4247;
+  --accent:#5CC9BD; --accent-ink:#0B1A1D; --miss:#F08A9B; --almost:#E5B15C; --good:#5CC9BD;
+  --chip:#1F3539; --chip-on:#E7F0EE; --chip-on-ink:#0F1B1E;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;min-height:100vh}
+main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.6rem;line-height:1.15;margin:8px 0 4px;font-weight:600;letter-spacing:-0.01em}
+.sub{color:var(--muted);margin:0 0 18px}
+.filters{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.row{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:.875rem;border:0;background:var(--chip);color:var(--ink);padding:6px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--chip-on);color:var(--chip-on-ink)}
+.chip:focus-visible,.btn:focus-visible,.reveal:focus-visible,.link:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 20px;min-height:280px;display:flex;flex-direction:column;gap:14px}
+.meta{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:.85rem}
+.front{font-family:var(--serif);font-size:1.45rem;line-height:1.35;margin:0}
+.hint{color:var(--muted);margin:0}
+.answer{font-family:var(--serif);font-size:1.7rem;line-height:1.3;font-weight:600;margin:0;color:var(--accent)}
+.example{font-family:var(--serif);font-style:italic;font-size:1.1rem;margin:0}
+.note{margin:0;color:var(--muted);font-size:.95rem}
+.src{margin:auto 0 0;color:var(--muted);font-size:.8rem}
+.reveal{font:inherit;font-weight:600;margin-top:auto;border:2px solid var(--accent);background:transparent;color:var(--accent);padding:12px 16px;border-radius:10px;cursor:pointer}
+.reveal:hover{background:var(--accent);color:var(--accent-ink)}
+.rate{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:12px 8px;cursor:pointer;color:#fff}
+.btn small{display:block;font-weight:400;opacity:.9;font-size:.75rem}
+.btn.miss{background:var(--miss)} .btn.almost{background:var(--almost)} .btn.good{background:var(--good);color:var(--accent-ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.miss,:root:not([data-theme="light"]) .btn.almost{color:#0B1A1D}}
+:root[data-theme="dark"] .btn.miss,:root[data-theme="dark"] .btn.almost{color:#0B1A1D}
+.empty{text-align:center;padding:36px 12px}
+.empty p{margin:0 0 14px}
+.stats{display:flex;gap:18px;margin-top:22px;color:var(--muted);font-size:.9rem;flex-wrap:wrap}
+.stats b{color:var(--ink);font-weight:600}
+.foot{margin-top:18px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.85rem;gap:12px;flex-wrap:wrap}
+.link{font:inherit;font-size:.85rem;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:4px}
+.keys{color:var(--muted);font-size:.8rem;margin-top:6px}
+.goal{margin:-6px 0 16px}
+.goalrow{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
+.goalrow b{color:var(--ink);font-weight:600}
+.bar{height:6px;background:var(--chip);border-radius:3px;overflow:hidden;margin-top:6px}
+.bar .fill{display:block;height:100%;background:var(--accent)}
+.audio{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px}
+.audio .note{flex-basis:100%}
+.player{max-width:100%;height:36px}
+.chip.rec{background:var(--miss);color:var(--surface)}
+.panel{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);display:flex;flex-direction:column;gap:10px}
+.panel[hidden]{display:none}
+textarea{width:100%;font:inherit;font-size:.8rem;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;resize:vertical}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}.card.shown{border-color:var(--accent)}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Say it naturally</h1>
+  <p class="sub" id="sub"></p>
+  <div class="goal" id="goal"></div>
+  <div class="filters">
+    <div class="row" id="fsit" role="group" aria-label="Situation"></div>
+    <div class="row" id="ftype" role="group" aria-label="Type"></div>
+  </div>
+  <div id="stage" aria-live="polite"></div>
+  <div class="stats" id="stats"></div>
+  <div class="foot">
+    <span class="keys">Keys: Space shows the answer, then 1, 2 or 3 to rate.</span>
+    <span><button class="link" id="backup" type="button">Backup</button> <button class="link" id="reset" type="button">Reset progress</button></span>
+  </div>
+<div class="panel" id="panel" hidden>
+    <p class="note">Copy this text and keep it somewhere safe. To restore on another device, paste it here and press Load.</p>
+    <textarea id="bk" rows="5" spellcheck="false"></textarea>
+    <div class="row"><button class="chip" id="bkcopy" type="button">Copy</button><button class="chip" id="bkload" type="button">Load pasted text</button></div>
+    <p class="note" id="bkmsg"></p>
+  </div>
+</main>
+<script>
+(function(){
+var DAY=86400000;
+var INTERVALS=[0,1,2,4,7,14];
+var STORE="sayit-progress-v1";
+
+// kind: Upgrade | Structure | Chunk | Phrasal verb
+var CARDS=[
+ {id:"u1",kind:"Upgrade",sit:"Standup",front:"“I have something for my side.”",hint:"Say it more precisely.",answer:"“I have an update from my side.”",note:"“From my side” and “from my end” are both common. “Something” is vague.",src:"From your standup"},
+ {id:"u2",kind:"Upgrade",sit:"Standup",front:"“Just a reminder that for the next seven business days, I going to be off.”",hint:"Say it as a quick announcement.",answer:"“Just a heads-up: I’ll be out for the next seven business days.”",note:"“Heads-up” fits an announcement. Both “out” and “off” work.",src:"From your standup"},
+ {id:"u3",kind:"Upgrade",sit:"Standup",front:"“Alejandro will come back next Monday.”",hint:"Use the tense for a scheduled event.",answer:"“Alejandro is back on Monday.”",note:"Scheduled events often use the present simple.",src:"From your standup"},
+ {id:"u4",kind:"Upgrade",sit:"Standup",front:"“I tried to do something to create a document in order that he can continue the work.”",hint:"Be specific and use a phrasal verb.",answer:"“I’m putting together a handover document so he can pick up where I left off.”",note:"Replace “do something” with the real action, and “in order that” with “so”.",src:"From your standup"},
+ {id:"u5",kind:"Upgrade",sit:"Standup",front:"“I created several pull requests in order to migrate all the specs.”",hint:"Which verb goes with pull request?",answer:"“I opened several pull requests to migrate all the specs.”",note:"You open a PR. Plain “to” is lighter than “in order to”.",src:"From your standup"},
+ {id:"u6",kind:"Upgrade",sit:"Standup",front:"“I review some comments also.”",hint:"Reviewers review. What do you do with their comments?",answer:"“I’m addressing the review comments on the rest.”",note:"You address (respond to) comments that someone else wrote.",src:"From your standup"},
+ {id:"u7",kind:"Upgrade",sit:"Standup",front:"“Yeah, I can start.”",hint:"Use the standard standup phrase.",answer:"“Sure, I can go first.”",note:"“Go first” and “go next” are the usual standup phrases.",src:"From your standup"},
+ {id:"u8",kind:"Upgrade",sit:"Standup",front:"“Thank you. Bye bye.”",hint:"You will be away for a week.",answer:"“Thanks, everyone. See you in a week!”",note:"Warmer and more natural than “bye bye”.",src:"From your standup"},
+ {id:"s1",kind:"Structure",sit:"Standup",front:"Give your standup update in three parts.",hint:"Keep the tenses fixed.",answer:"Yesterday I [past]. Today I’m [-ing]. No blockers.",example:"“Yesterday I migrated 17 tests. Today I’m working on the remaining specs. No blockers for now.”",note:"Past for yesterday, “I’m + -ing” or “I’ll” for today.",src:"Pattern from your standups"},
+
+ {id:"c1",kind:"Chunk",sit:"Standup",front:"You have nothing to report.",answer:"“I don’t have any updates from my end.”",src:"Heard in your standups"},
+ {id:"c2",kind:"Chunk",sit:"Standup",front:"Someone gives you a schedule change or an announcement.",answer:"“Thank you for the heads-up.”",src:"Heard in your standups"},
+ {id:"c3",kind:"Chunk",sit:"Standup",front:"You need time to check before you answer.",answer:"“Let me confirm and I’ll let you know.”",src:"Heard in your standups"},
+ {id:"c4",kind:"Chunk",sit:"Standup",front:"Someone asks you to look into something.",answer:"“I’ll take a look at that.”",src:"Heard in your standups"},
+ {id:"c5",kind:"Chunk",sit:"Standup",front:"You can’t promise, but you will try.",answer:"“I’ll see what I can do.”",src:"Heard in your standups"},
+ {id:"c6",kind:"Chunk",sit:"Standup",front:"You understood the explanation.",answer:"“That makes sense.”",src:"Heard in your standups"},
+ {id:"c7",kind:"Chunk",sit:"Standup",front:"Someone asks something and you are not sure yet.",answer:"“I would need to confirm.”",src:"Heard in your standups"},
+ {id:"c8",kind:"Chunk",sit:"Standup",front:"You have no blockers.",answer:"“No blockers for now.”",src:"Heard in your standups"},
+ {id:"c9",kind:"Chunk",sit:"Standup",front:"You have nothing to add at the end.",answer:"“Nothing else for me.” or “Not from my side.”",src:"Heard in your standups"},
+ {id:"c10",kind:"Chunk",sit:"Standup",front:"You will pass information on to a colleague.",answer:"“I’ll let him know.”",src:"Heard in your standups"},
+ {id:"c11",kind:"Chunk",sit:"Standup",front:"You want to reframe a problem politely.",answer:"“I don’t want to call it a missing feature. I think it’s more like a business gap.”",src:"Heard in your standups"},
+ {id:"c12",kind:"Chunk",sit:"Standup",front:"The meeting is ending.",answer:"“Thanks, everyone. Have a great rest of the day.”",src:"Heard in your standups"},
+
+ {id:"p1",kind:"Phrasal verb",sit:"Standup",front:"“I’m ______ a handover document.”",hint:"Create or assemble something.",answer:"put together",example:"“I’m putting together a handover document.”",src:"From your standup"},
+ {id:"p2",kind:"Phrasal verb",sit:"Standup",front:"“He can ______ where I left off.”",hint:"Continue someone else’s work.",answer:"pick up",example:"“He can pick up where I left off.”",src:"From your standup"},
+ {id:"p3",kind:"Phrasal verb",sit:"Standup",front:"“I’m going to ______ my tickets to Alejandro.”",hint:"Transfer work to someone.",answer:"hand over",example:"“I’m handing over my tickets to Alejandro.”",src:"Based on your standup"},
+ {id:"p4",kind:"Phrasal verb",sit:"Standup",front:"“New bugs ______ after the business questions.”",hint:"Appear unexpectedly.",answer:"come up",example:"“New bugs came up after the business questions.”",src:"Heard in your standups"},
+ {id:"p5",kind:"Phrasal verb",sit:"Standup",front:"“We ______ adding a flag to control it.”",hint:"Finally did something, as a result.",answer:"ended up",example:"“We ended up adding a flag to control it.”",src:"Heard in your standups"},
+ {id:"p6",kind:"Phrasal verb",sit:"Standup",front:"“I’m ______ the MSK setup.”",hint:"Deal with something step by step.",answer:"working through",example:"“I’m working through the MSK setup.”",src:"Heard in your standups"},
+ {id:"p7",kind:"Phrasal verb",sit:"Standup",front:"“I’ll ______ the new ticket tomorrow.”",hint:"Begin working on something.",answer:"start on",example:"“I’ll start on the new ticket tomorrow.”",src:"Heard in your standups"},
+ {id:"p8",kind:"Phrasal verb",sit:"Standup",front:"“Let’s start so you can ______ some time.”",hint:"Free up time for people.",answer:"get back",example:"“Let’s start so you can get back some time.”",src:"Heard in your standups"},
+
+ {id:"r1",kind:"Chunk",sit:"Refinement",front:"You don’t understand a term in the user story.",answer:"“Could you clarify what we mean by [term] here?”",src:"Suggested, not from your meetings"},
+ {id:"r2",kind:"Chunk",sit:"Refinement",front:"The story can be read in two ways.",answer:"“It’s not clear to me whether [A] or [B].”",src:"Suggested, not from your meetings"},
+ {id:"r3",kind:"Chunk",sit:"Refinement",front:"The story seems incomplete before estimating.",answer:"“Is anything missing before we can estimate this?”",src:"Suggested, not from your meetings"},
+ {id:"r4",kind:"Chunk",sit:"Refinement",front:"You want to know when the story is done.",answer:"“What are the acceptance criteria for this story?”",src:"Suggested, not from your meetings"},
+ {id:"r5",kind:"Chunk",sit:"Refinement",front:"The story depends on another task.",answer:"“This depends on [X], so we may need to [Y] first.”",src:"Suggested, not from your meetings"},
+
+ {id:"i1",kind:"Chunk",sit:"Infrastructure",front:"You need help from the infrastructure team.",answer:"“Could you help us with [X]? We’re blocked until it’s done.”",src:"Suggested, not from your meetings"},
+ {id:"i2",kind:"Chunk",sit:"Infrastructure",front:"You want a timeline for a request.",answer:"“Do you have an ETA for this?”",src:"Suggested, not from your meetings"},
+ {id:"i3",kind:"Chunk",sit:"Infrastructure",front:"They haven’t answered your request.",answer:"“Just following up on my request from yesterday.”",src:"Suggested, not from your meetings"},
+ {id:"i4",kind:"Chunk",sit:"Infrastructure",front:"You can’t deploy without access.",answer:"“We need access to [X] to deploy to stage.”",src:"Suggested, not from your meetings"},
+
+ {id:"k1",kind:"Chunk",sit:"Casual",front:"You want to give an honest opinion, gently.",answer:"“To be honest, I’m not really into [X].”",src:"Suggested, not from your meetings"},
+ {id:"k2",kind:"Chunk",sit:"Casual",front:"You have wanted to try something for a while.",answer:"“I’ve been meaning to try [X].”",src:"Suggested, not from your meetings"},
+ {id:"k3",kind:"Chunk",sit:"Casual",front:"You want to ask someone’s opinion.",answer:"“What’s your take on [X]?”",src:"Suggested, not from your meetings"},
+ {id:"k4",kind:"Chunk",sit:"Casual",front:"You need to end a chat and go back to work.",answer:"“Anyway, I should get back to work.”",src:"Suggested, not from your meetings"}
+];
+
+var SITS=["All","Standup","Refinement","Infrastructure","Casual"];
+var TYPES=["All","Upgrade","Chunk","Phrasal verb","Structure"];
+var fSit="All", fType="All", practice=false;
+var queue=[], idx=0, revealed=false, armed=false;
+
+var mem={};
+function load(){try{var r=localStorage.getItem(STORE);return r?JSON.parse(r):{};}catch(e){return mem;}}
+function save(){try{localStorage.setItem(STORE,JSON.stringify(prog));}catch(e){mem=prog;}}
+var prog=load();
+var META="sayit-meta-v1";
+var memMeta=null;
+function loadMeta(){try{var r=localStorage.getItem(META);if(r)return JSON.parse(r);}catch(e){if(memMeta)return memMeta;}return {goal:10,days:{}};}
+var meta=loadMeta();
+function saveMeta(){try{localStorage.setItem(META,JSON.stringify(meta));}catch(e){memMeta=meta;}}
+function dayKey(t){var d=new Date(t);return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}
+function todayCount(){return meta.days[dayKey(Date.now())]||0;}
+function streak(){var n=0,d=new Date();if(!meta.days[dayKey(d.getTime())])d.setDate(d.getDate()-1);while(meta.days[dayKey(d.getTime())]){n++;d.setDate(d.getDate()-1);}return n;}
+
+function matches(c){return (fSit==="All"||c.sit===fSit)&&(fType==="All"||c.kind===fType);}
+function isDue(c){var p=prog[c.id];return !p||p.due<=Date.now();}
+function build(){
+  var list=CARDS.filter(matches);
+  if(!practice){list=list.filter(isDue);}
+  list.sort(function(a,b){var pa=prog[a.id],pb=prog[b.id];return (pa?pa.due:0)-(pb?pb.due:0);});
+  queue=list;idx=0;revealed=false;
+}
+function el(t,cls,txt){var e=document.createElement(t);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
+
+function chips(host,items,cur,onPick){
+  host.textContent="";
+  items.forEach(function(name){
+    var b=el("button","chip",name);b.type="button";b.setAttribute("aria-pressed",String(name===cur));
+    b.addEventListener("click",function(){onPick(name);});host.appendChild(b);
+  });
+}
+function fmtNext(ms){
+  var d=ms-Date.now();
+  if(d<3600000)return "in under an hour";
+  if(d<DAY)return "in "+Math.round(d/3600000)+" hours";
+  var n=Math.round(d/DAY);return "in "+n+(n===1?" day":" days");
+}
+
+function render(){
+  chips(document.getElementById("fsit"),SITS,fSit,function(v){fSit=v;practice=false;build();render();});
+  chips(document.getElementById("ftype"),TYPES,fType,function(v){fType=v;practice=false;build();render();});
+
+  var dueNow=CARDS.filter(function(c){return matches(c)&&isDue(c);}).length;
+  document.getElementById("sub").textContent=dueNow+(dueNow===1?" card is":" cards are")+" due. Say each answer out loud before you reveal it.";
+
+  var stage=document.getElementById("stage");stage.textContent="";
+  var cur=queue[idx];if(rec.id&&(!cur||rec.id!==cur.id))clearRec();
+  if(idx>=queue.length){
+    var box=el("div","card empty");
+    var future=CARDS.filter(function(c){return matches(c)&&!isDue(c);}).map(function(c){return prog[c.id].due;});
+    if(queue.length===0&&future.length===0&&!practice){box.appendChild(el("p","","No cards match these filters."));}
+    else if(practice){box.appendChild(el("p","front","Round finished."));}
+    else{
+      box.appendChild(el("p","front","Nothing due right now."));
+      if(future.length){box.appendChild(el("p","hint","Next review "+fmtNext(Math.min.apply(null,future))+"."));}
+    }
+    var again=el("button","reveal","Practice all cards in this filter");again.type="button";
+    again.addEventListener("click",function(){practice=true;build();render();});
+    box.appendChild(again);
+    stage.appendChild(box);
+  }else{
+    var c=queue[idx];
+    var card=el("div","card"+(revealed?" shown":""));
+    var meta=el("div","meta");
+    meta.appendChild(el("span","",c.kind+" in "+c.sit));
+    meta.appendChild(el("span","",(idx+1)+" of "+queue.length));
+    card.appendChild(meta);
+    card.appendChild(el("p","front",c.front));
+    if(c.hint)card.appendChild(el("p","hint",c.hint));
+    if(!revealed){
+      card.appendChild(audioRow(c,false));
+      var r=el("button","reveal","Show answer");r.type="button";r.id="reveal";
+      r.addEventListener("click",function(){revealed=true;render();});
+      card.appendChild(r);
+    }else{
+      card.appendChild(el("p","answer",c.answer));
+      if(c.example)card.appendChild(el("p","example",c.example));
+      if(c.note)card.appendChild(el("p","note",c.note));
+      card.appendChild(audioRow(c,true));
+      card.appendChild(el("p","src",c.src));
+    }
+    stage.appendChild(card);
+    if(revealed){
+      var rate=el("div","rate");
+      [["miss","Missed it","See it again soon"],["almost","Almost","Tomorrow"],["good","Got it","Longer gap"]].forEach(function(o){
+        var b=el("button","btn "+o[0]);b.type="button";b.appendChild(document.createTextNode(o[1]));
+        b.appendChild(el("small","",o[2]));
+        b.addEventListener("click",function(){rateCard(o[0]);});rate.appendChild(b);
+      });
+      stage.appendChild(rate);
+    }
+  }
+  renderStats();
+}
+
+function rateCard(r){
+  var c=queue[idx];if(!c)return;
+  var p=prog[c.id]||{box:0,due:0,seen:0};var box=p.box,due;
+  if(r==="miss"){box=0;due=Date.now();}
+  else if(r==="almost"){due=Date.now()+Math.max(1,INTERVALS[box])*DAY;}
+  else{box=Math.min(box+1,INTERVALS.length-1);due=Date.now()+INTERVALS[box]*DAY;}
+  prog[c.id]={box:box,due:due,seen:(p.seen||0)+1};
+  save();
+  var dk=dayKey(Date.now());meta.days[dk]=(meta.days[dk]||0)+1;saveMeta();
+  if(r==="miss")queue.push(c);
+  idx++;revealed=false;render();
+}
+
+function renderGoal(){
+  var host=document.getElementById("goal");host.textContent="";
+  var n=todayCount(),g=meta.goal,s=streak();
+  var row=el("div","goalrow");
+  var a=el("span");a.appendChild(el("b","",n+" of "+g));a.appendChild(document.createTextNode(" reviews today"+(n>=g?". Goal reached.":"")));
+  var st=el("span","",s>0?s+(s===1?" day":" days")+" in a row":"Start your streak today");
+  var chg=el("button","link","Change goal");chg.type="button";
+  chg.addEventListener("click",function(){var o=[5,10,20,30];var i=o.indexOf(meta.goal);meta.goal=o[(i+1)%o.length];saveMeta();renderGoal();});
+  row.appendChild(a);row.appendChild(st);row.appendChild(chg);
+  var bar=el("div","bar");var f=el("span","fill");f.style.width=Math.min(100,Math.round(n/g*100))+"%";bar.appendChild(f);
+  host.appendChild(row);host.appendChild(bar);
+}
+function renderStats(){renderGoal();
+  var n=0,l=0,s=0;
+  CARDS.forEach(function(c){var p=prog[c.id];if(!p)n++;else if(p.box>=3)s++;else l++;});
+  var host=document.getElementById("stats");host.textContent="";
+  [["New",n],["Learning",l],["Strong",s]].forEach(function(o){
+    var sp=el("span");var b=el("b","",String(o[1]));sp.appendChild(b);sp.appendChild(document.createTextNode(" "+o[0]));host.appendChild(sp);
+  });
+}
+
+document.getElementById("reset").addEventListener("click",function(){
+  var b=this;
+  if(!armed){armed=true;b.textContent="Click again to erase all progress";
+    setTimeout(function(){armed=false;b.textContent="Reset progress";},4000);return;}
+  armed=false;prog={};save();meta={goal:meta.goal,days:{}};saveMeta();b.textContent="Reset progress";practice=false;build();render();
+});
+
+document.addEventListener("keydown",function(e){
+  if(e.target&&(e.target.tagName==="AUDIO"||e.target.tagName==="TEXTAREA"||(e.target.tagName==="BUTTON"&&(e.key===" "||e.key==="Enter"))))return;
+  if(idx>=queue.length)return;
+  if(!revealed&&(e.key===" "||e.key==="Enter")){e.preventDefault();revealed=true;render();var rb=document.querySelector(".btn.good");if(rb)rb.focus({preventScroll:true});return;}
+  if(revealed){
+    if(e.key==="1")rateCard("miss");
+    else if(e.key==="2")rateCard("almost");
+    else if(e.key==="3")rateCard("good");
+  }
+});
+
+var rec={id:null,url:null,mr:null,state:"idle",msg:""};
+function clearRec(){
+  if(rec.mr&&rec.state==="recording"){try{rec.mr.stop();}catch(e){}}
+  if(rec.url)URL.revokeObjectURL(rec.url);
+  rec={id:null,url:null,mr:null,state:"idle",msg:""};
+}
+function speakText(c){
+  var t=((c.kind==="Phrasal verb"||c.kind==="Structure")&&c.example)?c.example:c.answer;
+  return t.replace(/[“”]/g,"").replace(/\[[^\]]*\]/g,"something");
+}
+function hear(c){
+  if(!window.speechSynthesis)return;
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(speakText(c));u.lang="en-US";u.rate=0.9;
+  var v=speechSynthesis.getVoices().filter(function(x){return /^en/i.test(x.lang);});
+  var us=v.filter(function(x){return /en[-_]US/i.test(x.lang);});
+  if(us[0]||v[0])u.voice=us[0]||v[0];
+  speechSynthesis.speak(u);
+}
+function startRec(c){
+  if(!navigator.mediaDevices||!window.MediaRecorder){rec.id=c.id;rec.msg="Recording isn’t supported in this browser.";render();return;}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    var chunks=[];var mr=new MediaRecorder(stream);
+    mr.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data);};
+    mr.onstop=function(){
+      stream.getTracks().forEach(function(t){t.stop();});
+      if(rec.id!==c.id)return;
+      var blob=new Blob(chunks,{type:mr.mimeType||"audio/webm"});
+      if(rec.url)URL.revokeObjectURL(rec.url);
+      rec.url=URL.createObjectURL(blob);rec.state="ready";render();
+    };
+    rec.id=c.id;rec.mr=mr;rec.state="recording";rec.msg="";mr.start();render();
+  }).catch(function(){rec.id=c.id;rec.msg="The microphone is blocked here. Allow it in your browser, or open the page directly instead of inside another app.";render();});
+}
+function audioRow(c,isBack){
+  var row=el("div","audio");
+  if(isBack&&window.speechSynthesis){
+    var h=el("button","chip","Hear it");h.type="button";h.addEventListener("click",function(){hear(c);});row.appendChild(h);
+  }
+  var mine=rec.id===c.id;
+  if(mine&&rec.state==="recording"){
+    var s=el("button","chip rec","Stop recording");s.type="button";s.addEventListener("click",function(){rec.mr.stop();});row.appendChild(s);
+  }else{
+    var b=el("button","chip",(mine&&rec.state==="ready")?"Record again":"Record yourself");b.type="button";b.addEventListener("click",function(){startRec(c);});row.appendChild(b);
+  }
+  if(mine&&rec.state==="ready"&&rec.url){
+    var a=document.createElement("audio");a.controls=true;a.src=rec.url;a.className="player";row.appendChild(a);
+  }
+  if(mine&&rec.msg)row.appendChild(el("p","note",rec.msg));
+  return row;
+}
+
+function copyText(ta,msg){
+  ta.select();
+  var done=function(){msg.textContent="Copied.";};
+  var fail=function(){msg.textContent="Select the text and copy it manually.";};
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(ta.value).then(done,function(){try{document.execCommand("copy")?done():fail();}catch(e){fail();}});
+    }else{document.execCommand("copy")?done():fail();}
+  }catch(e){fail();}
+}
+document.getElementById("backup").addEventListener("click",function(){
+  var p=document.getElementById("panel");p.hidden=!p.hidden;
+  if(!p.hidden){document.getElementById("bk").value=JSON.stringify({v:1,progress:prog,meta:meta});document.getElementById("bkmsg").textContent="";}
+});
+document.getElementById("bkcopy").addEventListener("click",function(){copyText(document.getElementById("bk"),document.getElementById("bkmsg"));});
+document.getElementById("bkload").addEventListener("click",function(){
+  var msg=document.getElementById("bkmsg");
+  try{
+    var d=JSON.parse(document.getElementById("bk").value);
+    if(!d||typeof d.progress!=="object"||!d.progress)throw new Error("bad");
+    var np={};
+    CARDS.forEach(function(c){var p=d.progress[c.id];if(p&&typeof p.box==="number"&&typeof p.due==="number")np[c.id]={box:Math.max(0,Math.min(5,Math.floor(p.box))),due:p.due,seen:p.seen|0};});
+    var nm={goal:10,days:{}};
+    if(d.meta&&typeof d.meta==="object"){
+      if([5,10,20,30].indexOf(d.meta.goal)>=0)nm.goal=d.meta.goal;
+      if(d.meta.days&&typeof d.meta.days==="object"){Object.keys(d.meta.days).forEach(function(k){var v=d.meta.days[k];if(/^\d{4}-\d{2}-\d{2}$/.test(k)&&typeof v==="number")nm.days[k]=v|0;});}
+    }
+    prog=np;meta=nm;save();saveMeta();practice=false;build();render();
+    msg.textContent="Progress loaded.";
+  }catch(e){msg.textContent="That text isn’t a valid backup.";}
+});
+
+build();render();
+})();
+</script>
+</body>
+</html>
