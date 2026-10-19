@@ -80,10 +80,23 @@ h1{font-size:1.6rem;line-height:1.15;margin:8px 0 4px;font-weight:600;letter-spa
 .panel[hidden]{display:none}
 textarea{width:100%;font:inherit;font-size:.8rem;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;resize:vertical}
 @media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}.card.shown{border-color:var(--accent)}}
+.lock{width:calc(100% - 32px);max-width:420px;margin:10vh auto 0;padding:24px 20px;background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;gap:12px}
+.lock[hidden]{display:none}
+.lock h1{margin:0}
+.lock .sub{margin:0}
+.lock input[type=password]{font:inherit;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.remember{display:flex;gap:8px;align-items:center;font-size:.9rem;color:var(--muted)}
 </style>
 </head>
 <body>
-<main>
+<div class="lock" id="lock">
+  <h1>Say it naturally</h1>
+  <p class="sub" id="lockmsg">Enter your passphrase to open your flashcards.</p>
+  <input id="pass" type="password" autocomplete="current-password" aria-label="Passphrase">
+  <label class="remember"><input id="remember" type="checkbox"> Keep me unlocked on this device</label>
+  <button class="reveal" id="unlock" type="button">Unlock</button>
+</div>
+<main hidden>
   <h1>Say it naturally</h1>
   <p class="sub" id="sub"></p>
   <div class="goal" id="goal"></div>
@@ -104,6 +117,7 @@ textarea{width:100%;font:inherit;font-size:.8rem;background:var(--bg);color:var(
     <p class="note" id="bkmsg"></p>
   </div>
 </main>
+<script type="application/json" id="payload">{"s":"xpfV6qnJWXSTgpVXFL5erw==","i":"9wiZ8d9IxQTEXPEj","c":"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","n":600000}</script>
 <script>
 (function(){
 var DAY=86400000;
@@ -111,55 +125,7 @@ var INTERVALS=[0,1,2,4,7,14];
 var STORE="sayit-progress-v1";
 
 // kind: Upgrade | Structure | Chunk | Phrasal verb
-var CARDS=[
- {id:"u1",kind:"Upgrade",sit:"Standup",front:"“I have something for my side.”",hint:"Say it more precisely.",answer:"“I have an update from my side.”",note:"“From my side” and “from my end” are both common. “Something” is vague.",src:"From your standup"},
- {id:"u2",kind:"Upgrade",sit:"Standup",front:"“Just a reminder that for the next seven business days, I going to be off.”",hint:"Say it as a quick announcement.",answer:"“Just a heads-up: I’ll be out for the next seven business days.”",note:"“Heads-up” fits an announcement. Both “out” and “off” work.",src:"From your standup"},
- {id:"u3",kind:"Upgrade",sit:"Standup",front:"“Alejandro will come back next Monday.”",hint:"Use the tense for a scheduled event.",answer:"“Alejandro is back on Monday.”",note:"Scheduled events often use the present simple.",src:"From your standup"},
- {id:"u4",kind:"Upgrade",sit:"Standup",front:"“I tried to do something to create a document in order that he can continue the work.”",hint:"Be specific and use a phrasal verb.",answer:"“I’m putting together a handover document so he can pick up where I left off.”",note:"Replace “do something” with the real action, and “in order that” with “so”.",src:"From your standup"},
- {id:"u5",kind:"Upgrade",sit:"Standup",front:"“I created several pull requests in order to migrate all the specs.”",hint:"Which verb goes with pull request?",answer:"“I opened several pull requests to migrate all the specs.”",note:"You open a PR. Plain “to” is lighter than “in order to”.",src:"From your standup"},
- {id:"u6",kind:"Upgrade",sit:"Standup",front:"“I review some comments also.”",hint:"Reviewers review. What do you do with their comments?",answer:"“I’m addressing the review comments on the rest.”",note:"You address (respond to) comments that someone else wrote.",src:"From your standup"},
- {id:"u7",kind:"Upgrade",sit:"Standup",front:"“Yeah, I can start.”",hint:"Use the standard standup phrase.",answer:"“Sure, I can go first.”",note:"“Go first” and “go next” are the usual standup phrases.",src:"From your standup"},
- {id:"u8",kind:"Upgrade",sit:"Standup",front:"“Thank you. Bye bye.”",hint:"You will be away for a week.",answer:"“Thanks, everyone. See you in a week!”",note:"Warmer and more natural than “bye bye”.",src:"From your standup"},
- {id:"s1",kind:"Structure",sit:"Standup",front:"Give your standup update in three parts.",hint:"Keep the tenses fixed.",answer:"Yesterday I [past]. Today I’m [-ing]. No blockers.",example:"“Yesterday I migrated 17 tests. Today I’m working on the remaining specs. No blockers for now.”",note:"Past for yesterday, “I’m + -ing” or “I’ll” for today.",src:"Pattern from your standups"},
-
- {id:"c1",kind:"Chunk",sit:"Standup",front:"You have nothing to report.",answer:"“I don’t have any updates from my end.”",src:"Heard in your standups"},
- {id:"c2",kind:"Chunk",sit:"Standup",front:"Someone gives you a schedule change or an announcement.",answer:"“Thank you for the heads-up.”",src:"Heard in your standups"},
- {id:"c3",kind:"Chunk",sit:"Standup",front:"You need time to check before you answer.",answer:"“Let me confirm and I’ll let you know.”",src:"Heard in your standups"},
- {id:"c4",kind:"Chunk",sit:"Standup",front:"Someone asks you to look into something.",answer:"“I’ll take a look at that.”",src:"Heard in your standups"},
- {id:"c5",kind:"Chunk",sit:"Standup",front:"You can’t promise, but you will try.",answer:"“I’ll see what I can do.”",src:"Heard in your standups"},
- {id:"c6",kind:"Chunk",sit:"Standup",front:"You understood the explanation.",answer:"“That makes sense.”",src:"Heard in your standups"},
- {id:"c7",kind:"Chunk",sit:"Standup",front:"Someone asks something and you are not sure yet.",answer:"“I would need to confirm.”",src:"Heard in your standups"},
- {id:"c8",kind:"Chunk",sit:"Standup",front:"You have no blockers.",answer:"“No blockers for now.”",src:"Heard in your standups"},
- {id:"c9",kind:"Chunk",sit:"Standup",front:"You have nothing to add at the end.",answer:"“Nothing else for me.” or “Not from my side.”",src:"Heard in your standups"},
- {id:"c10",kind:"Chunk",sit:"Standup",front:"You will pass information on to a colleague.",answer:"“I’ll let him know.”",src:"Heard in your standups"},
- {id:"c11",kind:"Chunk",sit:"Standup",front:"You want to reframe a problem politely.",answer:"“I don’t want to call it a missing feature. I think it’s more like a business gap.”",src:"Heard in your standups"},
- {id:"c12",kind:"Chunk",sit:"Standup",front:"The meeting is ending.",answer:"“Thanks, everyone. Have a great rest of the day.”",src:"Heard in your standups"},
-
- {id:"p1",kind:"Phrasal verb",sit:"Standup",front:"“I’m ______ a handover document.”",hint:"Create or assemble something.",answer:"put together",example:"“I’m putting together a handover document.”",src:"From your standup"},
- {id:"p2",kind:"Phrasal verb",sit:"Standup",front:"“He can ______ where I left off.”",hint:"Continue someone else’s work.",answer:"pick up",example:"“He can pick up where I left off.”",src:"From your standup"},
- {id:"p3",kind:"Phrasal verb",sit:"Standup",front:"“I’m going to ______ my tickets to Alejandro.”",hint:"Transfer work to someone.",answer:"hand over",example:"“I’m handing over my tickets to Alejandro.”",src:"Based on your standup"},
- {id:"p4",kind:"Phrasal verb",sit:"Standup",front:"“New bugs ______ after the business questions.”",hint:"Appear unexpectedly.",answer:"come up",example:"“New bugs came up after the business questions.”",src:"Heard in your standups"},
- {id:"p5",kind:"Phrasal verb",sit:"Standup",front:"“We ______ adding a flag to control it.”",hint:"Finally did something, as a result.",answer:"ended up",example:"“We ended up adding a flag to control it.”",src:"Heard in your standups"},
- {id:"p6",kind:"Phrasal verb",sit:"Standup",front:"“I’m ______ the MSK setup.”",hint:"Deal with something step by step.",answer:"working through",example:"“I’m working through the MSK setup.”",src:"Heard in your standups"},
- {id:"p7",kind:"Phrasal verb",sit:"Standup",front:"“I’ll ______ the new ticket tomorrow.”",hint:"Begin working on something.",answer:"start on",example:"“I’ll start on the new ticket tomorrow.”",src:"Heard in your standups"},
- {id:"p8",kind:"Phrasal verb",sit:"Standup",front:"“Let’s start so you can ______ some time.”",hint:"Free up time for people.",answer:"get back",example:"“Let’s start so you can get back some time.”",src:"Heard in your standups"},
-
- {id:"r1",kind:"Chunk",sit:"Refinement",front:"You don’t understand a term in the user story.",answer:"“Could you clarify what we mean by [term] here?”",src:"Suggested, not from your meetings"},
- {id:"r2",kind:"Chunk",sit:"Refinement",front:"The story can be read in two ways.",answer:"“It’s not clear to me whether [A] or [B].”",src:"Suggested, not from your meetings"},
- {id:"r3",kind:"Chunk",sit:"Refinement",front:"The story seems incomplete before estimating.",answer:"“Is anything missing before we can estimate this?”",src:"Suggested, not from your meetings"},
- {id:"r4",kind:"Chunk",sit:"Refinement",front:"You want to know when the story is done.",answer:"“What are the acceptance criteria for this story?”",src:"Suggested, not from your meetings"},
- {id:"r5",kind:"Chunk",sit:"Refinement",front:"The story depends on another task.",answer:"“This depends on [X], so we may need to [Y] first.”",src:"Suggested, not from your meetings"},
-
- {id:"i1",kind:"Chunk",sit:"Infrastructure",front:"You need help from the infrastructure team.",answer:"“Could you help us with [X]? We’re blocked until it’s done.”",src:"Suggested, not from your meetings"},
- {id:"i2",kind:"Chunk",sit:"Infrastructure",front:"You want a timeline for a request.",answer:"“Do you have an ETA for this?”",src:"Suggested, not from your meetings"},
- {id:"i3",kind:"Chunk",sit:"Infrastructure",front:"They haven’t answered your request.",answer:"“Just following up on my request from yesterday.”",src:"Suggested, not from your meetings"},
- {id:"i4",kind:"Chunk",sit:"Infrastructure",front:"You can’t deploy without access.",answer:"“We need access to [X] to deploy to stage.”",src:"Suggested, not from your meetings"},
-
- {id:"k1",kind:"Chunk",sit:"Casual",front:"You want to give an honest opinion, gently.",answer:"“To be honest, I’m not really into [X].”",src:"Suggested, not from your meetings"},
- {id:"k2",kind:"Chunk",sit:"Casual",front:"You have wanted to try something for a while.",answer:"“I’ve been meaning to try [X].”",src:"Suggested, not from your meetings"},
- {id:"k3",kind:"Chunk",sit:"Casual",front:"You want to ask someone’s opinion.",answer:"“What’s your take on [X]?”",src:"Suggested, not from your meetings"},
- {id:"k4",kind:"Chunk",sit:"Casual",front:"You need to end a chat and go back to work.",answer:"“Anyway, I should get back to work.”",src:"Suggested, not from your meetings"}
-];
+var CARDS=[];
 
 var SITS=["All","Standup","Refinement","Infrastructure","Casual"];
 var TYPES=["All","Upgrade","Chunk","Phrasal verb","Structure"];
@@ -396,7 +362,53 @@ document.getElementById("bkload").addEventListener("click",function(){
   }catch(e){msg.textContent="That text isn’t a valid backup.";}
 });
 
-build();render();
+/*CRYPTO-BEGIN*/
+function b64(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+function deriveKey(pass,salt,iter){
+  return crypto.subtle.importKey("raw",new TextEncoder().encode(pass),"PBKDF2",false,["deriveKey"]).then(function(km){
+    return crypto.subtle.deriveKey({name:"PBKDF2",salt:salt,iterations:iter,hash:"SHA-256"},km,{name:"AES-GCM",length:256},true,["decrypt"]);
+  });
+}
+function decryptWith(key,P){
+  return crypto.subtle.decrypt({name:"AES-GCM",iv:b64(P.i)},key,b64(P.c)).then(function(buf){
+    return JSON.parse(new TextDecoder().decode(buf));
+  });
+}
+/*CRYPTO-END*/
+var KEYSTORE="sayit-key-v1";
+var payload=null;
+try{payload=JSON.parse(document.getElementById("payload").textContent);}catch(e){payload=null;}
+var lockEl=document.getElementById("lock"),lockMsg=document.getElementById("lockmsg");
+var passEl=document.getElementById("pass"),unlockBtn=document.getElementById("unlock"),rememberEl=document.getElementById("remember");
+function openApp(cards){
+  lockEl.hidden=true;document.querySelector("main").hidden=false;
+  CARDS=cards;build();render();
+}
+function tryUnlock(){
+  var pass=passEl.value;if(!pass)return;
+  lockMsg.textContent="Unlocking…";unlockBtn.disabled=true;
+  deriveKey(pass,b64(payload.s),payload.n).then(function(key){
+    return decryptWith(key,payload).then(function(cards){
+      if(rememberEl.checked){
+        crypto.subtle.exportKey("jwk",key).then(function(j){try{localStorage.setItem(KEYSTORE,JSON.stringify(j));}catch(e){}});
+      }
+      openApp(cards);
+    });
+  }).catch(function(){lockMsg.textContent="Wrong passphrase. Try again.";unlockBtn.disabled=false;passEl.select();});
+}
+unlockBtn.addEventListener("click",tryUnlock);
+passEl.addEventListener("keydown",function(e){if(e.key==="Enter")tryUnlock();});
+if(!payload||!payload.c){
+  lockMsg.textContent="This page has not been set up yet. Create it with the builder file.";passEl.disabled=true;unlockBtn.disabled=true;
+}else if(!(window.crypto&&crypto.subtle)){
+  lockMsg.textContent="This browser can’t unlock the page. Open it over https in a current browser.";passEl.disabled=true;unlockBtn.disabled=true;
+}else{
+  var saved=null;try{saved=localStorage.getItem(KEYSTORE);}catch(e){}
+  if(saved){
+    crypto.subtle.importKey("jwk",JSON.parse(saved),{name:"AES-GCM"},false,["decrypt"]).then(function(k){return decryptWith(k,payload);})
+      .then(openApp).catch(function(){try{localStorage.removeItem(KEYSTORE);}catch(e){}passEl.focus();});
+  }else{passEl.focus();}
+}
 })();
 </script>
 </body>
